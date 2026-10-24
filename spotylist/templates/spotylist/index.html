@@ -25,41 +25,16 @@
 
         <section class="albums-panel">
             <h2 class="panel-title">Список всех альбомов</h2>
+            
             <div style="margin-bottom: 15px;">
                 <a href="?source=file" class="btn btn--primary" style="text-decoration: none; display: inline-block; text-align:center;">Показать из JSON</a>
                 <a href="?source=db" class="btn btn--primary" style="text-decoration: none; display: inline-block; text-align: center;">Показать из БД</a>
             </div>
 
+            <input type="text" id="search-input" class="input" placeholder="Поиск по альбомам" style="margin-bottom: 15px;">
+
             <div class="albums-grid">
-                {% for album in albums %}
-                    <article class="album-card" data-index="{{ album.index }}">
-
-                        <div class="album-cover">
-                            <img src="{{ album.image_url }}" alt="{{ album.name }}">
-                        </div>
-
-                        <div class="album-meta">
-                            <h3 class="album-name">{{ album.name }}</h3>
-                            <p class="album-authors">{{ album.authors|default:"-" }}</p>
-                            <p class="album-length">{{ album.length|default:"-" }}</p>
-                            <p class="album-price">{{ album.price|default:"-" }}</p>
-                        </div>
-
-                        <div class="album-tracks">
-                            <p class="tracks-title">Треки</p>
-                            <div class="tracks-scroll">
-                                {% for track in album.tracks %}
-                                    <p class="track">{{ track }}</p>
-                                {% empty %}
-                                    <p class="track track--empty">Треки не определены</p>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                    </article>
-                {% empty %}
-                    <p class="albums-empty">Пока нет ни одного альбома</p>
-                {% endfor %}
+                {% include 'spotylist/_album_cards.html' %}
             </div>
         </section>
 

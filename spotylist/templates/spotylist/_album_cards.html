@@ -1,0 +1,31 @@
+{% for album in albums %}
+    <article class="album-card" data-index="{{ album.index|default:'' }}" data-id="{{ album.id|default:'' }}">
+        
+        <div class="album-cover">
+            <img src="{{ album.image_url }}" alt="{{ album.name }}">
+        </div>
+
+        <div class="album-meta">
+            <h3 class="album-name">{{ album.name }}</h3>
+            <p class="album-authors">{{ album.authors|default:"—" }}</p>
+            <p class="album-length">{{ album.length|default:"—" }}</p>
+            <p class="album-price">{{ album.price|default:"-" }}</p>
+        </div>
+
+        <div class="album-tracks">
+            <p class="tracks-title">Треки</p>
+            <div class="tracks-scroll">
+                {% for track in album.tracks %}
+                    <p class="track">{{ track }}</p>
+                {% empty %}
+                    <p class="track track--empty">Треки не определены</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Сюда на Шаге 5 мы добавим кнопки редактирования и удаления для БД -->
+        
+    </article>
+{% empty %}
+    <p class="albums-empty">Пока нет ни одного альбома</p>
+{% endfor %}

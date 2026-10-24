@@ -1,7 +1,10 @@
+from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 from django.conf import settings
 from .models import Album, Track
+from django.db.models import Q
 from pathlib import Path
 import json, re
 
@@ -206,3 +209,52 @@ def import_album(request):
     write_albums(albums)
     messages.success(request, f'Импортировано альбомов: {len(albums_to_import)}')
     return redirect('index')
+
+def search_albums(request):
+    query = request.GET.get('q', '').strip()
+    source = request.GET.get('source', 'file')
+
+    if source == 'db':
+        db_albums = Album.objects.filter(
+            Q(name__icontains=query) |
+            Q(authors__icontains=query) |
+            Q(tracks__name__icontains=query)
+        ).distinct().prefetch_related('tracks')
+
+        albums = []
+        for album in db_albums:
+            albums.append({
+                'name': album.name,
+                'authors': album.authors,
+                'length': album.length,
+                'price': album.price,
+                'image': album.image,
+                'image_url': f'/media/{album.image}' if album.image else '/static/spotylist/images/undefined.jpeg',
+                'tracks': [track.name for track in album.tracks.all()],
+                'is_db': True,
+                'id': album.id
+            })
+    else:
+        all_albums = read_albums()
+        albums = []
+
+        for album in all_albums:
+            name = album.get('name', '') or ''
+            authors = album.get('authors', '') or ''
+            tracks = album.get('tracks') or []
+
+
+            if (query.lower() in name.lower() or
+               query.lower() in authors.lower() or
+               any(query.lower() in str(track).lower() for track in tracks)):
+
+                if album.get('image'):
+                    album['image_url'] = f'/media/{album["image"]}'
+                else:
+                    album['image_url'] = '/static/spotylist/images/undefined.jpeg'
+
+                album['is_db'] = False
+                albums.append(album)
+
+    html = render_to_string('spotylist/_album_cards.html', {'albums': albums})
+    return HttpResponse(html)

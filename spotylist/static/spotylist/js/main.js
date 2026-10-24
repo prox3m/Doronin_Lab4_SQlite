@@ -97,3 +97,20 @@ importInput.addEventListener('change', function() {
 
     fetch('/import/', {method: 'POST', body: formData, redirect: 'manual',}).then(() => {importInput.value = ''; window.location.reload();});
 });
+
+
+const searchInput = document.getElementById('search-input');
+const albumsGrid = document.querySelector('.albums-grid');
+
+const urlParams = new URLSearchParams(window.location.search);
+const currentSource = urlParams.get('source') || 'file';
+
+searchInput.addEventListener('input', function() {
+    const query = searchInput.value;
+
+    fetch(`/search/?q=${encodeURIComponent(query)}&source=${currentSource}`)
+        .then(response => response.text())
+        .then(html => {
+            albumsGrid.innerHTML = html;
+        });
+});
