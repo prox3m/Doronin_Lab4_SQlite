@@ -25,6 +25,10 @@
 
         <section class="albums-panel">
             <h2 class="panel-title">Список всех альбомов</h2>
+            <div style="margin-bottom: 15px;">
+                <a href="?source=file" class="btn btn--primary" style="text-decoration: none; display: inline-block; text-align:center;">Показать из JSON</a>
+                <a href="?source=db" class="btn btn--primary" style="text-decoration: none; display: inline-block; text-align: center;">Показать из БД</a>
+            </div>
 
             <div class="albums-grid">
                 {% for album in albums %}

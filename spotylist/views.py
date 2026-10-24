@@ -10,13 +10,33 @@ TIME_RE = re.compile(r'^(\d+:)?\d{1,2}:\d{1,2}:\d{1,2}$')
 MEDIA_COVERS = Path(settings.MEDIA_ROOT) / 'covers'
 
 def index(request):
-    albums = read_albums()
+    source = request.GET.get('source', 'file')
 
-    for album in albums:
-        if album.get('image'):
-            album['image_url'] = f'/media/{album["image"]}'
-        else:
-            album['image_url'] = '/static/spotylist/images/undefined.jpeg'
+    if source == 'db':
+        db_albums = Album.objects.all().prefetch_related('tracks').order_by('-created_at')
+
+        albums = []
+
+        for album in db_albums:
+            albums.append({
+                'name': album.name,
+                'authors': album.authors,
+                'length': album.length,
+                'price': album.price,
+                'image': album.image,
+                'image_url': f'/media/{album.image}' if album.image else '/static/spotylist/images/undefined.jpeg',
+                'tracks': [track.name for track in album.tracks.all()],
+                'is_db': True,
+                'id': album.id
+            })
+    else:
+        albums = read_albums()
+
+        for album in albums:
+            if album.get('image'):
+                album['image_url'] = f'/media/{album["image"]}'
+            else:
+                album['image_url'] = '/static/spotylist/images/undefined.jpeg'
 
     return render(request, 'spotylist/index.html', {'albums': albums})
 
@@ -76,7 +96,7 @@ def create_album(request):
 
         new_ablum = Album.objects.create(
             name = album_data['name'],
-            authros = album_data['authors'],
+            authors = album_data['authors'],
             length = album_data['length'],
             price = album_data['price'] if album_data['price'] else None,
             image = album_data['image']
