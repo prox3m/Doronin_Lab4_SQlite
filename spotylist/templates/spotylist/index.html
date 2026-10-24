@@ -36,8 +36,9 @@
 
                         <div class="album-meta">
                             <h3 class="album-name">{{ album.name }}</h3>
-                            <p class="album-authors">{{ album.authors|default:"—" }}</p>
-                            <p class="album-length">{{ album.length|default:"—" }}</p>
+                            <p class="album-authors">{{ album.authors|default:"-" }}</p>
+                            <p class="album-length">{{ album.length|default:"-" }}</p>
+                            <p class="album-price">{{ album.price|default:"-" }}</p>
                         </div>
 
                         <div class="album-tracks">
@@ -88,6 +89,10 @@
                 <div class="form-row">
                     <input type="text" id="album-length" name="length"
                            class="input" placeholder="Время (0:12:34)">
+                </div>
+
+                <div>
+                    <input type="text" id="album-price" name="price" class="input" placeholder="Стоимость $">
                 </div>
 
                 <div class="form-row form-row--track">

@@ -41,6 +41,7 @@ def create_album(request):
         'image': '',
         'authors': request.POST.get('authors', '').strip(),
         'length': request.POST.get('length', '').strip(),
+        'price': request.POST.get('price', '').strip(),
         'tracks': request.POST.getlist('tracks'),
     }
 
@@ -80,6 +81,14 @@ def validate(album):
     name = album.get('name', '')
     if name.strip() == '':
         not_valid.append('Название обязательно')
+
+    price = album.get('price', '')
+    if price:
+        if not price.isdigit():
+            try:
+                float(price)
+            except ValueError:
+                not_valid.append('Стоимость не числовая')
     
     length = album.get('length', '')
     if not TIME_RE.match(length.strip()):
@@ -110,7 +119,11 @@ def import_album(request):
     if not file:
         messages.error(request, "Не удалось получить файл")
         return redirect('index')
-    
+
+    if not file.name.lower().endswith('.json'):
+        messages.error(request, "Файл должен быть в формате .json")
+        return redirect('index')
+
     try:
         content = file.read().decode('utf-8')
         data = json.loads(content)
@@ -118,27 +131,37 @@ def import_album(request):
         messages.error(request, 'Файл не является корректным JSON')
         return redirect('index')
 
-    if not isinstance(data, dict):
-        messages.error(request, 'Данные JSON файла не являются словарем')
+    if isinstance(data, dict):
+        albums_to_import = [data]
+    elif isinstance(data, list):
+        albums_to_import = data
+    else:
+        messages.error(request, 'JSON должен быть объектом или списком объектов')
         return redirect('index')
-
-    errors = validate(data)
-    if errors:
-        for error in errors:
-            messages.error(request, error)
-        return redirect('index')
-    
-    data.setdefault('authors', '')
-    data.setdefault('length', '')
-    data.setdefault('image', '')
-    data.setdefault('tracks', [])
 
     albums = read_albums()
     
-    data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+    for i, album in enumerate(albums_to_import):
+        if not isinstance(album, dict):
+            messages.error(request, f'Альбом №{i + 1} не является объектом')
+            return redirect('index')
 
-    albums.append(data)
+        errors = validate(album)
+        if errors:
+            for error in errors:
+                messages.error(request, f'Альбом №{i + 1}: {error}')
+            return redirect('index')
+
+    for album in albums_to_import:
+        album.setdefault('authors', '')
+        album.setdefault('length', '')
+        album.setdefault('price', '')
+        album.setdefault('image', '')
+        album.setdefault('tracks', [])
+
+        album['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+        albums.append(album)
+
     write_albums(albums)
-
-    messages.success(request, f'Альбом ◄{data["name"]}► импортирован!')
+    messages.success(request, f'Импортировано альбомов: {len(albums_to_import)}')
     return redirect('index')

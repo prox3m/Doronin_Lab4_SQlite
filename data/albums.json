@@ -7,6 +7,8 @@
             "Monstrosity",
             "Search, destroy, repeat"
         ],
+        "price": "",
+        "image": "",
         "index": 0
     },
     {
@@ -17,6 +19,20 @@
             "Aria Math",
             "Subwoofer Lullaby"
         ],
+        "price": "",
+        "image": "",
         "index": 1
+    },
+    {
+        "name": "Album",
+        "authors": "Doronin Dmitriy",
+        "length": "1:02:58",
+        "tracks": [
+            "Track1",
+            "Track2"
+        ],
+        "price": "",
+        "image": "",
+        "index": 2
     }
 ]

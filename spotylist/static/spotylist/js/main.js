@@ -35,12 +35,14 @@ const saveButton = document.getElementById('save-btn');
 const albumName = document.getElementById('album-name');
 const albumAuthors = document.getElementById('album-authors');
 const ablumLength = document.getElementById('album-length');
+const albumPrice = document.getElementById('album-price');
 
 saveButton.addEventListener('click', function() {
     const formData = new FormData();
     formData.append('name', albumName.value);
     formData.append('authors', albumAuthors.value);
     formData.append('length', ablumLength.value);
+    formData.append('price', albumPrice.value);
 
     const imageFile = fileInput.files[0];
     if (imageFile) {
@@ -56,7 +58,7 @@ saveButton.addEventListener('click', function() {
         formData.append('tracks', name);
     })
 
-    fetch('/create/', {method: 'POST', body: formData,}).then(() => {window.location.reload();});
+    fetch('/create/', {method: 'POST', body: formData, redirect: 'manual',}).then(() => {window.location.reload();});
 });
 
 
@@ -89,5 +91,5 @@ importInput.addEventListener('change', function() {
     formData.append('file', file);
     formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
 
-    fetch('/import/', {method: 'POST', body: formData,}).then(() => {window.location.reload();});
+    fetch('/import/', {method: 'POST', body: formData, redirect: 'manual'}).then(() => {window.location.reload();});
 });

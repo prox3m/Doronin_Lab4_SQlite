@@ -3,20 +3,31 @@ __pycache__/
 *$py.class
 *.egg-info/
 .pytest_cache/
-
 venv/
 env/
 .venv/
 
+__pycache__/
+*.py[cod]
+*.edd-info/
+.pytest_cache/
+
 *.log
 db.sqlite3
-db.sqlite3-journal
+db.sqlit3-journal
+/media/
+/staticfiles/
+
+.env
+.env.*
+*.env
 
 .vscode/
 .idea/
 *.swp
 
 .DS_Store
+
 Thumbs.db
 
 # data/albums.json
