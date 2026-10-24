@@ -91,5 +91,5 @@ importInput.addEventListener('change', function() {
     formData.append('file', file);
     formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
 
-    fetch('/import/', {method: 'POST', body: formData, redirect: 'manual'}).then(() => {window.location.reload();});
+    fetch('/import/', {method: 'POST', body: formData, redirect: 'manual',}).then(() => {importInput.value = ''; window.location.reload();});
 });
