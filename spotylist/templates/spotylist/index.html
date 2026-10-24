@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotyList</title>
+    <link rel="stylesheet" href="{% static 'spotylist/css/style.css' %}">
+</head>
+<body>
+
+    <header class="header">
+        <p class="logo"><span>Spoty</span>List</p>
+    </header>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message message--{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="main">
+
+        <section class="albums-panel">
+            <h2 class="panel-title">Список всех альбомов</h2>
+
+            <div class="albums-grid">
+                {% for album in albums %}
+                    <article class="album-card" data-index="{{ album.index }}">
+
+                        <div class="album-cover">
+                            <img src="{{ album.image_url }}" alt="{{ album.name }}">
+                        </div>
+
+                        <div class="album-meta">
+                            <h3 class="album-name">{{ album.name }}</h3>
+                            <p class="album-authors">{{ album.authors|default:"—" }}</p>
+                            <p class="album-length">{{ album.length|default:"—" }}</p>
+                        </div>
+
+                        <div class="album-tracks">
+                            <p class="tracks-title">Треки</p>
+                            <div class="tracks-scroll">
+                                {% for track in album.tracks %}
+                                    <p class="track">{{ track }}</p>
+                                {% empty %}
+                                    <p class="track track--empty">Треки не определены</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </article>
+                {% empty %}
+                    <p class="albums-empty">Пока нет ни одного альбома</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="create-panel">
+
+            <div class="panel-actions">
+                <button type="button" id="save-btn" class="btn btn--primary">Сохранить</button>
+                <button type="button" id="import-btn" class="btn btn--primary">Импорт</button>
+                <input type="file" id="import-input" accept=".json,application/json" hidden>
+            </div>
+
+            <form id="album-form" class="album-form" autocomplete="off">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <label for="album-image" class="file-label">Фото</label>
+                    <input type="file" id="album-image" name="image" accept="image/*" hidden>
+                    <span class="file-name" id="file-name">Файл не выбран</span>
+                </div>
+
+                <div class="form-row">
+                    <input type="text" id="album-name" name="name"
+                           class="input" placeholder="Название альбома" maxlength="120">
+                </div>
+
+                <div class="form-row">
+                    <input type="text" id="album-authors" name="authors"
+                           class="input" placeholder="Автор (разделитель ;)">
+                </div>
+
+                <div class="form-row">
+                    <input type="text" id="album-length" name="length"
+                           class="input" placeholder="Время (0:12:34)">
+                </div>
+
+                <div class="form-row form-row--track">
+                    <input type="text" id="track-input"
+                           class="input" placeholder="Название трека">
+                    <button type="button" id="add-track-btn" class="btn btn--icon" title="Добавить">+</button>
+                </div>
+
+                <div class="track-list-edit" id="track-list-edit"></div>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>Учебный проект</p>
+    </footer>
+
+    <script src="{% static 'spotylist/js/main.js' %}"></script>
+</body>
+</html>
