@@ -258,3 +258,16 @@ def search_albums(request):
 
     html = render_to_string('spotylist/_album_cards.html', {'albums': albums})
     return HttpResponse(html)
+
+def delete_album(request):
+    if request.method == 'POST':
+        album_id = request.POST.get('id')
+        
+        try:
+            album = Album.objects.get(id = album_id)
+            album.delete()
+            return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')
+        except Album.DoesNotExist:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Не наиден'}), content_type='application/json')
+
+    return HttpResponse(json.dumps({'status': 'error'}), content_type='application/json')

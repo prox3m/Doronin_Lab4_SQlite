@@ -23,7 +23,11 @@
             </div>
         </div>
 
-        <!-- Сюда на Шаге 5 мы добавим кнопки редактирования и удаления для БД -->
+        {% if album.is_db %}
+            <div class="album-actions" style="padding: 0 12px 12px;">
+                <button class="btn btn--small delete-btn" data-id="{{album.id}}">Удалить</button 
+            </div>
+        {% endif %}
         
     </article>
 {% empty %}

@@ -114,3 +114,31 @@ searchInput.addEventListener('input', function() {
             albumsGrid.innerHTML = html;
         });
 });
+
+
+albumsGrid.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-btn')) {
+        const albumId = event.target.getAttribute('data-id');
+        const card = event.target.closest('.album-card');
+
+        if (confirm('Вы уверены, что хотите удалить альбом?')) {
+            const formData = new FormData();
+            formData.append('id', albumId);
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            formData.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch('/delete/', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    card.remove();
+                } else {
+                    alert('Ошибка при удалении');
+                }
+            });
+        }
+    }
+});
