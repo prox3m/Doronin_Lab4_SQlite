@@ -1,10 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpotyList</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'spotylist/css/style.css' %}">
 </head>
 <body>
@@ -99,6 +100,48 @@
         <p>Учебный проект</p>
     </footer>
 
-    <script src="{% static 'spotylist/js/main.js' %}"></script>
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать альбом</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="edit-form">
+                        <input type="hidden" id="edit-id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Название</label>
+                            <input type="text" class="form-control" id="edit-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Авторы</label>
+                            <input type="text" class="form-control" id="edit-authors">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Время (чч:мм:сс)</label>
+                            <input type="text" class="form-control" id="edit-length">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Цена</label>
+                            <input type="number" step="0.01" class="form-control" id="edit-price">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Треки (через ;)</label>
+                            <input type="text" class="form-control" id="edit-tracks" placeholder="Трек 1; Трек 2">
+                        </div>
+                        
+                        <div id="edit-error" class="text-danger mb-2"></div>
+                        <button type="submit" class="btn btn-primary" id="save-edit-btn">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'spotylist/js/main.js' %}"></script>">
 </body>
 </html>

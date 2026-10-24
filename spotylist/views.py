@@ -6,7 +6,7 @@ from django.conf import settings
 from .models import Album, Track
 from django.db.models import Q
 from pathlib import Path
-import json, re
+import json, re, time
 
 DATA_FILE = Path(settings.BASE_DIR) / 'data' / 'albums.json'
 TIME_RE = re.compile(r'^(\d+:)?\d{1,2}:\d{1,2}:\d{1,2}$')
@@ -80,7 +80,7 @@ def create_album(request):
     image_path = ''
     if 'image' in request.FILES:
         file = request.FILES['image']
-        file_name = f'{album_data["index"]}_{file.name}'
+        file_name = f'{int(time.time())}_{file.name}'
         MEDIA_COVERS.mkdir(parents=True, exist_ok=True)
         full_path = MEDIA_COVERS / file_name
 
@@ -271,3 +271,41 @@ def delete_album(request):
             return HttpResponse(json.dumps({'status': 'error', 'message': 'Не наиден'}), content_type='application/json')
 
     return HttpResponse(json.dumps({'status': 'error'}), content_type='application/json')
+
+def edit_album(request):
+    if request.method == 'POST':
+        album_id = request.POST.get('id')
+
+        album_data = {
+            'name': request.POST.get('name', '').strip(),
+            'authors': request.POST.get('authors', '').strip(),
+            'length': request.POST.get('length', '').strip(),
+            'price': request.POST.get('price', '').strip(),
+            'tracks': [track.strip() for track in request.POST.get('tracks', '').split(';') if track.strip()]
+        }
+
+        errors = validate(album_data)
+        if errors:
+            return HttpResponse(json.dumps({'status':'error', 'message': '; '.join(errors)}), content_type='application/json')
+
+        try:
+            album = Album.objects.get(id=album_id)
+        except Album.DoesNotExist:
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Альбом не надиен'}), content_type='application/json')
+
+        if Album.objects.filter(name=album_data['name'], authors=album_data['authors']).exclude(id=album_id).exists():
+            return HttpResponse(json.dumps({'status': 'error', 'message': 'Альбом с таким названием и автором существует'}), content_type='application/json')
+
+        album.name = album_data['name']
+        album.authors = album_data['authors']
+        album.length = album_data['length']
+        album.price = album_data['price'] if album_data['price'] else None
+
+        album.save()
+
+        album.tracks.all().delete()
+
+        for i, track_name in enumerate(album_data['tracks']):
+            Track.objects.create(album=album, name=track_name, order=i)
+
+        return HttpResponse(json.dumps({'status': 'ok'}), content_type='application/json')

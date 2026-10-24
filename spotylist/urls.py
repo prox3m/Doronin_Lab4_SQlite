@@ -7,4 +7,5 @@ urlpatterns = [
     path('import/', views.import_album, name='import_album'),
     path('search/', views.search_albums, name='search_albums'),
     path('delete/', views.delete_album, name='delete_album'),
+    path('edit/', views.edit_album, name='edit_album'),
 ]

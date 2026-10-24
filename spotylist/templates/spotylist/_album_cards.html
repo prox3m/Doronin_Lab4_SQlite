@@ -24,8 +24,16 @@
         </div>
 
         {% if album.is_db %}
-            <div class="album-actions" style="padding: 0 12px 12px;">
-                <button class="btn btn--small delete-btn" data-id="{{album.id}}">Удалить</button 
+            <div class="album-actions" style="padding: 0 12px 12px; display: flex; gap: 8px;">
+                <button class="btn btn--small edit-btn"
+                    data-id="{{album.id}}"
+                    data-name="{{album.name}}"
+                    data-authors="{{album.authors}}"
+                    data-length="{{album.length}}"
+                    data-price="{{album.price}}"
+                    data-tracks="{{album.tracks|join:', '}}">Изменить</button>
+
+                <button class="btn btn--small delete-btn" data-id="{{album.id}}">Удалить</button>
             </div>
         {% endif %}
         

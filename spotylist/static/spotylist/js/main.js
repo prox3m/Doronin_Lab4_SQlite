@@ -142,3 +142,47 @@ albumsGrid.addEventListener('click', function(event) {
         }
     }
 });
+
+
+
+const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+const editForm = document.getElementById('edit-form');
+
+albumsGrid.addEventListener('click', function(event) {
+    if (event.target.classList.contains('edit-btn')) {
+        document.getElementById('edit-id').value = event.target.getAttribute('data-id');
+        document.getElementById('edit-name').value = event.target.getAttribute('data-name');
+        document.getElementById('edit-authors').value = event.target.getAttribute('data-authors');
+        document.getElementById('edit-length').value = event.target.getAttribute('data-length');
+        document.getElementById('edit-price').value = event.target.getAttribute('data-price');
+        document.getElementById('edit-tracks').value = event.target.getAttribute('data-tracks');
+
+        document.getElementById('edit-error').innerText = '';
+        editModal.show();
+    }
+});
+
+editForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('id', document.getElementById('edit-id').value);
+    formData.append('name', document.getElementById('edit-name').value);
+    formData.append('authors', document.getElementById('edit-authors').value);
+    formData.append('length', document.getElementById('edit-length').value);
+    formData.append('price', document.getElementById('edit-price').value);
+    formData.append('tracks', document.getElementById('edit-tracks').value);
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    formData.append('csrfmiddlewaretoken', csrfToken);
+
+    fetch('/edit/', {method: 'POST', body: formData})
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            window.location.reload();
+        } else {
+            document.getElementById('edit-error').innerText = data.message;
+        }
+    });
+});
