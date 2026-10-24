@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
+from .models import Album, Track
 from pathlib import Path
 import json, re
 
@@ -36,6 +37,8 @@ def create_album(request):
     if request.method != 'POST':
         return redirect('index')
 
+    save_destination = request.POST.get('save_destination', 'file')
+
     album_data = {
         'name': request.POST.get('name', '').strip(),
         'image': '',
@@ -50,9 +53,6 @@ def create_album(request):
         for error in errors:
             messages.error(request, error)
         return redirect('index')
-    
-    albums = read_albums()
-    album_data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
 
     image_path = ''
     if 'image' in request.FILES:
@@ -69,10 +69,31 @@ def create_album(request):
     
     album_data['image'] = image_path
 
-    albums.append(album_data)
-    write_albums(albums)
+    if save_destination == 'db':
+        if Album.objects.filter(name=album_data['name'], authors=album_data['authors']).exists():
+            messages.error(request, 'Такой альбом уже существует в базе данных')
+            return redirect('index.html')
 
-    messages.success(request, f'Альбом ◄{album_data["name"]}► сохранен!')
+        new_ablum = Album.objects.create(
+            name = album_data['name'],
+            authros = album_data['authors'],
+            length = album_data['length'],
+            price = album_data['price'] if album_data['price'] else None,
+            image = album_data['image']
+        )
+
+        for i, track_name in enumerate(album_data['tracks']):
+            Track.objects.create(album=new_ablum, name=track_name, order=i)
+
+        messages.success(request, f'Альбом ◄{album_data["name"]}► сохранен в базу данных')
+    else:
+        albums = read_albums()
+        album_data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+        albums.append(album_data)
+        write_albums(albums)
+        
+        messages.success(request, f'Альбом ◄{album_data["name"]}► сохранен в файл')
+
     return redirect('index')
 
 def validate(album):

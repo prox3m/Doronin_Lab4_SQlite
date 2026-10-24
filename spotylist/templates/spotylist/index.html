@@ -70,6 +70,15 @@
             <form id="album-form" class="album-form" autocomplete="off">
                 {% csrf_token %}
 
+                <div class="form-row" style="margin-bottom: 10px;">
+                    <label style="margin-right: 15px;">
+                        <input type="radio" name="save_destination" value="file" checked> Сохранить в JSON
+                    </label>
+                    <label>
+                        <input type="radio" name="save_destination" value="db"> Сохранить в базу данных
+                    </label>
+                </div>
+                
                 <div class="form-row">
                     <label for="album-image" class="file-label">Фото</label>
                     <input type="file" id="album-image" name="image" accept="image/*" hidden>

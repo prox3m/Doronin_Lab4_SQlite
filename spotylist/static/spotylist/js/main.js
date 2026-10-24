@@ -39,6 +39,10 @@ const albumPrice = document.getElementById('album-price');
 
 saveButton.addEventListener('click', function() {
     const formData = new FormData();
+
+    const saveDestination = document.querySelector('input[name="save_destination"]:checked').value;
+    formData.append('save_destination', saveDestination);
+    
     formData.append('name', albumName.value);
     formData.append('authors', albumAuthors.value);
     formData.append('length', ablumLength.value);
