@@ -36,6 +36,7 @@ const albumName = document.getElementById('album-name');
 const albumAuthors = document.getElementById('album-authors');
 const ablumLength = document.getElementById('album-length');
 const albumPrice = document.getElementById('album-price');
+const albumCountry = document.getElementById('album-country');
 
 saveButton.addEventListener('click', function() {
     const formData = new FormData();
@@ -47,6 +48,7 @@ saveButton.addEventListener('click', function() {
     formData.append('authors', albumAuthors.value);
     formData.append('length', ablumLength.value);
     formData.append('price', albumPrice.value);
+    formData.append('country', albumCountry.value);
 
     const imageFile = fileInput.files[0];
     if (imageFile) {
@@ -115,7 +117,6 @@ searchInput.addEventListener('input', function() {
         });
 });
 
-
 albumsGrid.addEventListener('click', function(event) {
     if (event.target.classList.contains('delete-btn')) {
         const albumId = event.target.getAttribute('data-id');
@@ -143,8 +144,6 @@ albumsGrid.addEventListener('click', function(event) {
     }
 });
 
-
-
 const editModal = new bootstrap.Modal(document.getElementById('editModal'));
 const editForm = document.getElementById('edit-form');
 
@@ -155,6 +154,7 @@ albumsGrid.addEventListener('click', function(event) {
         document.getElementById('edit-authors').value = event.target.getAttribute('data-authors');
         document.getElementById('edit-length').value = event.target.getAttribute('data-length');
         document.getElementById('edit-price').value = event.target.getAttribute('data-price');
+        document.getElementById('edit-country').value = event.target.getAttribute('data-country');
         document.getElementById('edit-tracks').value = event.target.getAttribute('data-tracks');
 
         document.getElementById('edit-error').innerText = '';
@@ -171,6 +171,7 @@ editForm.addEventListener('submit', function(event) {
     formData.append('authors', document.getElementById('edit-authors').value);
     formData.append('length', document.getElementById('edit-length').value);
     formData.append('price', document.getElementById('edit-price').value);
+    formData.append('country', document.getElementById('edit-country').value);
     formData.append('tracks', document.getElementById('edit-tracks').value);
 
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;

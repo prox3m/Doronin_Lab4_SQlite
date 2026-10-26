@@ -26,6 +26,7 @@ def index(request):
                 'authors': album.authors,
                 'length': album.length,
                 'price': album.price,
+                'country': album.country,
                 'image': album.image,
                 'image_url': f'/media/{album.image}' if album.image else '/static/spotylist/images/undefined.jpeg',
                 'tracks': [track.name for track in album.tracks.all()],
@@ -68,6 +69,7 @@ def create_album(request):
         'authors': request.POST.get('authors', '').strip(),
         'length': request.POST.get('length', '').strip(),
         'price': request.POST.get('price', '').strip(),
+        'country': request.POST.get('country', '').strip(),
         'tracks': request.POST.getlist('tracks'),
     }
 
@@ -102,6 +104,7 @@ def create_album(request):
             authors = album_data['authors'],
             length = album_data['length'],
             price = album_data['price'] if album_data['price'] else None,
+            country = album_data['country'],
             image = album_data['image']
         )
 
@@ -228,6 +231,7 @@ def search_albums(request):
                 'authors': album.authors,
                 'length': album.length,
                 'price': album.price,
+                'country': album.country,
                 'image': album.image,
                 'image_url': f'/media/{album.image}' if album.image else '/static/spotylist/images/undefined.jpeg',
                 'tracks': [track.name for track in album.tracks.all()],
@@ -281,6 +285,7 @@ def edit_album(request):
             'authors': request.POST.get('authors', '').strip(),
             'length': request.POST.get('length', '').strip(),
             'price': request.POST.get('price', '').strip(),
+            'country': request.POST.get('country', '').strip(),
             'tracks': [track.strip() for track in request.POST.get('tracks', '').split(';') if track.strip()]
         }
 
@@ -300,6 +305,7 @@ def edit_album(request):
         album.authors = album_data['authors']
         album.length = album_data['length']
         album.price = album_data['price'] if album_data['price'] else None
+        album.country = album_data['country']
 
         album.save()
 

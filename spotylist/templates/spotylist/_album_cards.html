@@ -10,6 +10,7 @@
             <p class="album-authors">{{ album.authors|default:"—" }}</p>
             <p class="album-length">{{ album.length|default:"—" }}</p>
             <p class="album-price">{{ album.price|default:"-" }}</p>
+            <p class="album-country">{{ album.country|default:"-"}}</p>
         </div>
 
         <div class="album-tracks">
@@ -31,6 +32,7 @@
                     data-authors="{{album.authors}}"
                     data-length="{{album.length}}"
                     data-price="{{album.price}}"
+                    data-country="{{album.country}}"
                     data-tracks="{{album.tracks|join:', '}}">Изменить</button>
 
                 <button class="btn btn--small delete-btn" data-id="{{album.id}}">Удалить</button>

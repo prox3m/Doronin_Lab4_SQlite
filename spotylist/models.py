@@ -5,6 +5,7 @@ class Album(models.Model):
     authors = models.CharField(max_length=200, blank=True, default='')
     length = models.CharField(max_length=20)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    country = models.CharField(max_length=50, blank=True, default='')
     image = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateField(auto_now_add=True)
 
